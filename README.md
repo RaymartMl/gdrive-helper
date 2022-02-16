@@ -5,7 +5,8 @@ An interface for the linux version of the [drive client](https://github.com/odek
 
 ## Demo
 
-Insert gif or link to demo
+![demo](https://github.com/RaymartMl/gdrive-helper/blob/master/demo.gif)
+
 
 ## API Reference
 
