@@ -3,6 +3,7 @@
 import inquirer from "inquirer";
 import { run } from "./helpers.js";
 
+// Available commands
 const PULL_PDF = "pull pdf";
 const PULL_TXT = "pull txt";
 const PUSH_DOCS = "push docs";
@@ -10,6 +11,7 @@ const COPY_FOLDER = "copy folder";
 const REMOVE_NUMBERS = "remove numbers";
 const DRIVE_INIT = "drive init";
 
+// Inquirer questions
 const questions = [
   {
     type: "rawlist",
@@ -53,45 +55,20 @@ const questions = [
     },
   },
 ];
+const answers = await inquirer.prompt(questions);
 
-inquirer.prompt(questions).then((answers) => {
-  switch (answers.command) {
-    case PULL_PDF: {
-      run(
-        `drive_linux pull -desktop-links=false -no-prompt=true -export pdf -same-exports-dir -ignore-name-clashes -exports-dir "${answers.localFolder}" "${answers.driveFolder}" && find "./${answers.localFolder}/" -empty -delete`,
-      );
-      break;
-    }
-    case PULL_TXT: {
-      run(
-        `drive_linux pull -desktop-links=false -no-prompt=true -export txt -same-exports-dir -ignore-name-clashes -exports-dir "${answers.localFolder}" "${answers.driveFolder}" && find "./${answers.localFolder}/" -empty -delete`,
-      );
-      break;
-    }
-    case PUSH_DOCS: {
-      run(`drive_linux push -convert "${answers.localFolder}"`);
-      break;
-    }
-    case REMOVE_NUMBERS: {
-      run(
-        `for file in ./"${answers.localFolder}"/*.txt; do sed -i -e '/^[0-9][0-9]*$/d' \"$file\"; done`,
-      );
-      break;
-    }
+// Run scripts
+const scripts: Record<string, string> = {
+  [PULL_PDF]: `drive_linux pull -desktop-links=false -no-prompt=true -export pdf -same-exports-dir -ignore-name-clashes -exports-dir "${answers.localFolder}" "${answers.driveFolder}" && find "./${answers.localFolder}/" -empty -delete`,
+  [PULL_TXT]: `drive_linux pull -desktop-links=false -no-prompt=true -export txt -same-exports-dir -ignore-name-clashes -exports-dir "${answers.localFolder}" "${answers.driveFolder}" && find "./${answers.localFolder}/" -empty -delete`,
+  [PUSH_DOCS]: `drive_linux push -ignore-name-clashes -convert "${answers.localFolder}"`,
+  [REMOVE_NUMBERS]: `for file in ./"${answers.localFolder}"/*.txt; do sed -i -e '/^[0-9][0-9]*$/d' \"$file\"; done`,
+  [COPY_FOLDER]: `drive_linux copy -recursive "${answers.driveFolder}" "${answers.driveFolder2}"`,
+  [DRIVE_INIT]: `drive_linux init`,
+};
 
-    case COPY_FOLDER: {
-      run(
-        `drive_linux copy -recursive "${answers.driveFolder}" "${answers.driveFolder2}"`,
-      );
-      break;
-    }
+if (!(answers.command in scripts)) {
+  throw new ReferenceError(`Undefined command: ${answers.command}`);
+}
 
-    case DRIVE_INIT: {
-      run(`drive_linux init`);
-      break;
-    }
-
-    default:
-      throw new ReferenceError(`Undefined command: ${answers.command}`);
-  }
-});
+run(scripts[answers.command]);
