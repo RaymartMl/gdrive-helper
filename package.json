@@ -2,7 +2,8 @@
   "name": "gdrive-helper",
   "version": "1.0.0",
   "description": "A CLI tool for automating repetitive tasks when using google services at my work.",
-  "main": "index.js",
+  "main": "./build/cli.js",
+  "bin": "./build/cli.js",
   "scripts": {
     "build": "tsc"
   },
