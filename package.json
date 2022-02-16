@@ -1,0 +1,16 @@
+{
+  "name": "gdrive-helper",
+  "version": "1.0.0",
+  "description": "A CLI tool for automating repetitive tasks when using google services at my work.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.18",
+    "typescript": "^4.5.5"
+  }
+}
